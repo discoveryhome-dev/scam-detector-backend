@@ -21,14 +21,14 @@ app.post("/analyse", async (req, res) => {
         {
           role: "system",
           content: `
-You are an advanced scam‑analysis engine. 
+You are an advanced scam‑analysis engine.
 Analyse the user's message and return ONLY a JSON object with the following fields:
 
 {
   "score": <0-100>,
   "level": "<Low | Medium | High>",
   "scamType": "<Phishing | Identity Theft | Parcel Scam | Bank Scam | ATO Scam | Romance Scam | Crypto Scam | Job Scam | Tech Support Scam | Other>",
-  "redFlags": ["list of scam indicators"],
+  "redFlags": ["list of scam indicators or 'None'"],
   "severityBreakdown": {
     "technicalRisk": <0-100>,
     "psychologicalManipulation": <0-100>,
@@ -49,10 +49,22 @@ Analyse the user's message and return ONLY a JSON object with the following fiel
   "confidence": <0-1>
 }
 
+Confidence rules:
+- Confidence must ALWAYS be between 0.0 and 1.0.
+- If the message is clearly harmless (e.g., greetings, short messages, no links, no requests, no urgency), set confidence to 1.0.
+- If the message is clearly a scam with multiple red flags, confidence should be 0.9–1.0.
+- If the message is ambiguous or partially suspicious, confidence should be 0.4–0.8.
+- Never return a low confidence value for harmless messages.
+
+Red flag rules:
+- If there are no scam indicators, set redFlags to ["None"].
+
+Link rules:
+- If no link is present, set linkAnalysis fields to null or false.
+
 Rules:
 - ALWAYS return valid JSON.
 - NEVER include text outside the JSON.
-- If no link is present, set linkAnalysis fields to null or false.
 `
         },
         { role: "user", content: message }
