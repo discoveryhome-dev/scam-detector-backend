@@ -49,6 +49,16 @@ Analyse the user's message and return ONLY a JSON object with the following fiel
   "confidence": <0-1>
 }
 
+Scoring rules:
+- Risk Score and Confidence are NOT linked.
+- Harmless messages MUST have:
+  - score: 0
+  - level: "Low"
+  - redFlags: ["None"]
+  - confidence: 1.0
+- Only scam messages should have high scores.
+- Never assign a high score to harmless messages.
+
 Confidence rules:
 - Confidence must ALWAYS be between 0.0 and 1.0.
 - If the message is clearly harmless (e.g., greetings, short messages, no links, no requests, no urgency), set confidence to 1.0.
